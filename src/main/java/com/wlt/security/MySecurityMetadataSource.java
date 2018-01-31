@@ -6,18 +6,12 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 
-
 import javax.annotation.PostConstruct;
-import java.util.*;
-
-/**
- * @author AdesKng
- * @version 1.0
- * @TIME 2017/10/07-21:19
- * @E-mail 109
- */
-/*<!--资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->*/
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+// <!--资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->*/
 public class MySecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
     private static Map<String, Collection<ConfigAttribute>> resourceMap = null;
 

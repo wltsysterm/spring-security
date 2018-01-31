@@ -12,15 +12,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * @author AdesKng
- * @version 1.0
- * @TIME 2017/10/07-16:43
- * @E-mail 109
+ * accessDecisionManager这个
+ 也称为授权器，通过登录用户的权限信息、资源、获取资源所需的
+ 权限来根据不同的授权策略来判断用户是否有权限访问资源
  */
-        /*accessDecisionManager这个
-        也称为授权器，通过登录用户的权限信息、资源、获取资源所需的
-        权限来根据不同的授权策略来判断用户是否有权限访问资源。*/
-
 public class MyAccessDecisionManager implements AccessDecisionManager {
     /**
      * @deprecated

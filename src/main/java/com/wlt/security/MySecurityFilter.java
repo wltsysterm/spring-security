@@ -12,31 +12,20 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import javax.annotation.PostConstruct;
 import javax.servlet.*;
 import java.io.IOException;
-
-/**
- * @author AdesKng
- * @version 1.0
- * @TIME 2017/10/07-21:10
- * @E-mail 109
- */
 public class MySecurityFilter extends AbstractSecurityInterceptor implements Filter {
     //与applicationContext-security.xml里的myFilter的属性securityMetadataSource对应，
     //其他的两个组件，已经在AbstractSecurityInterceptor定义
     @Autowired
     private FilterInvocationSecurityMetadataSource mySecurityMetadataSource;
 
-
     @PostConstruct
     public void init(){
 	System.out.println(" ---------------  MySecurityFilter init--------------- ");
-        /*super.setAuthenticationManager(myAuthenticationManager);
-        super.setAccessDecisionManager(myAccessDecisionManager);*/
     }
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         System.out.println(" ---------------  doFilter--------------- ");
@@ -63,7 +52,6 @@ public class MySecurityFilter extends AbstractSecurityInterceptor implements Fil
 
     @Override
     public void destroy() {
-
     }
 
     @Override
