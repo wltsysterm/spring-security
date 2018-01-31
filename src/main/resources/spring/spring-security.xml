@@ -23,7 +23,7 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
     <!-- path-type：表示使用Apache Ant的匹配模式。-->
     <!--access-denied-page：访问拒绝时转向的页面。-->
     <!-- access-decision-manager-ref：指定了自定义的访问策略管理器。-->
-    <http auto-config="true" use-expressions="true">
+    <http auto-config="false" entry-point-ref="myAuthenticationEntryPoint">
         <intercept-url pattern="/api/login" access="permitAll" />
         <intercept-url pattern="/api/access_Denied" access="permitAll" />
         <intercept-url pattern="/api/password_Denied" access="permitAll" />
@@ -32,39 +32,12 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
         <!--把相应的目录的资源设置权限-->
         <intercept-url pattern="/WEB-INF/views/**" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="isAuthenticated()" />
-        <!--起始页，前提必须要permitall-->
-        <!--login-page：指定登录页面。  -->
-        <!--username-parameter：用户名对应的表单name-->
-        <!--password-parameter:密码对应的表单name-->
-        <!-- login-processing-url：指定了客户在登录页面中按下 Sign In 按钮时要访问的 URL。-->
-        <!-- authentication-failure-url：指定了身份验证失败时跳转到的页面。-->
-        <!-- default-target-url：指定了成功进行身份验证和授权后默认呈现给用户的页面。-->
-        <!-- always-use-default-target：指定了是否在身份验证通过后总是跳转到default-target-url属性指定的URL。-->
-        <form-login
-                login-page="/api/login"
-                username-parameter="username"
-                password-parameter="password"
-                login-processing-url="/api/index"
-                authentication-failure-url="/api/password_Denied"
-                authentication-success-forward-url="/api/index"/>
-        <!--logout-url：指定了用于响应退出系统请求的URL。其默认值为：/j_spring_security_logout。-->
-        <!-- logout-success-url：退出系统后转向的URL。-->
-        <!-- invalidate-session：指定在退出系统时是否要销毁Session。-->
-        <logout invalidate-session="true" logout-success-url="/api/login"
-                logout-url="/api/j_spring_security_logout" />
         <!-- 实现免登陆验证 -->
         <remember-me />
-        <!--是否允许多用户用一个账号登陆-->
-        <!-- max-sessions:允许用户帐号登录的次数。范例限制用户只能登录一次。-->
-        <!-- 此值表示：用户第二次登录时，前一次的登录信息都被清空。-->
-        <!--   exception-if-maximum-exceeded:默认为false，-->
-        <!-- 当exception-if-maximum-exceeded="true"时系统会拒绝第二次登录。-->
-        <session-management >
-            <concurrency-control max-sessions="1"
-                                 error-if-maximum-exceeded="true" />
-        </session-management>
         <!-- 将自定义的实现了权限控制逻辑的过滤器加入到spring-security的过滤器链中 -->
         <custom-filter ref="mySecurityFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+        <!-- 认证 --><!-- 重写登陆认证的过滤器，使我们可以拿到任何参数  -->
+        <custom-filter ref="myAuthenticationFilter" position="FORM_LOGIN_FILTER"/>
         <csrf disabled="true"/>
     </http>
     <!--身份验证-->
@@ -74,10 +47,29 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
             <!--如果用户的密码采用加密的话 <password-encoder hash="md5" /> -->
         </authentication-provider>
     </authentication-manager>
+    <!-- 未登录的切入点 --><!-- 需要有个切入点 -->
+    <beans:bean id="myAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg value="/api/login"/>
+    </beans:bean>
+    <!-- 登录验证器：用户有没有登录的资格 --><!-- 这个就是重写的认证过滤器 -->
+    <beans:bean id="myAuthenticationFilter1" class="com.wlt.security.MyAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="MyAuthenticationManager" />
+        <beans:property name="filterProcessesUrl" value="/j_spring_security_check" />
+        <beans:property name="authenticationSuccessHandler">
+            <beans:bean class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+                <beans:property name="defaultTargetUrl" value="/api/index" />
+            </beans:bean>
+        </beans:property>
+        <beans:property name="authenticationFailureHandler">
+            <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+                <beans:property name="defaultFailureUrl" value="/api/password_Denied" />
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
     <!--可以用注解开发-->
     <beans:bean id="mySecurityFilter" class="com.wlt.security.MySecurityFilter">
         <!--获取当前用户名的关联信息，并交给authenticationManager对比用户的密码-->
-        <beans:property name="authenticationManager" ref="MyAuthenticationManager"/>
+        <!--<beans:property name="authenticationManager" ref="MyAuthenticationManager"/>-->
         <!--登入成功之后资源是否有权限访问鉴定-->
         <beans:property name="accessDecisionManager" ref="myAccessDecisionManager"/>
     </beans:bean>
