@@ -26,6 +26,7 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
     <http auto-config="true" use-expressions="true">
         <intercept-url pattern="/api/login" access="permitAll" />
         <intercept-url pattern="/api/access_Denied" access="permitAll" />
+        <intercept-url pattern="/api/password_Denied" access="permitAll" />
         <intercept-url pattern="/api/index" access="hasRole('ROLE_USER')" />
         <intercept-url pattern="/WEB-INF/**" access="hasRole('ROLE_USER')" />
         <!--把相应的目录的资源设置权限-->
@@ -33,6 +34,8 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
         <intercept-url pattern="/**" access="isAuthenticated()" />
         <!--起始页，前提必须要permitall-->
         <!--login-page：指定登录页面。  -->
+        <!--username-parameter：用户名对应的表单name-->
+        <!--password-parameter:密码对应的表单name-->
         <!-- login-processing-url：指定了客户在登录页面中按下 Sign In 按钮时要访问的 URL。-->
         <!-- authentication-failure-url：指定了身份验证失败时跳转到的页面。-->
         <!-- default-target-url：指定了成功进行身份验证和授权后默认呈现给用户的页面。-->
@@ -42,7 +45,7 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
                 username-parameter="username"
                 password-parameter="password"
                 login-processing-url="/api/index"
-                authentication-failure-url="/api/access_Denied"
+                authentication-failure-url="/api/password_Denied"
                 authentication-success-forward-url="/api/index"/>
         <!--logout-url：指定了用于响应退出系统请求的URL。其默认值为：/j_spring_security_logout。-->
         <!-- logout-success-url：退出系统后转向的URL。-->

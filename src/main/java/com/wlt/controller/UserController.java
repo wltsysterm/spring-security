@@ -30,4 +30,11 @@ public class UserController {
 
         return "/access_Denied";
     }
+    @RequestMapping("/password_Denied")
+    public String password_Denied(String username){
+        System.out.println(username);
+        System.out.println("密码错误页");
+
+        return "/password_Denied";
+    }
 }
