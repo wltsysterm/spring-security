@@ -52,9 +52,11 @@ http://www.springframework.org/schema/security/spring-security-4.2.xsd http://ww
         <beans:constructor-arg value="/api/login"/>
     </beans:bean>
     <!-- 登录验证器：用户有没有登录的资格 --><!-- 这个就是重写的认证过滤器 -->
-    <beans:bean id="myAuthenticationFilter1" class="com.wlt.security.MyAuthenticationFilter">
+    <beans:bean id="myAuthenticationFilter" class="com.wlt.security.MyAuthenticationFilter">
         <beans:property name="authenticationManager" ref="MyAuthenticationManager" />
         <beans:property name="filterProcessesUrl" value="/j_spring_security_check" />
+        <beans:property name="usernameParameter" value="username"/>
+        <beans:property name="passwordParameter" value="password"/>
         <beans:property name="authenticationSuccessHandler">
             <beans:bean class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
                 <beans:property name="defaultTargetUrl" value="/api/index" />
